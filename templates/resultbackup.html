@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - Manifest Analyzer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2 text-success"></i>
+                    Analysis Complete
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card p-3 bg-primary bg-opacity-10 rounded">
+                            <h3 class="text-primary mb-1">{{ "{:,}".format(summary['Total Items']) }}</h3>
+                            <p class="text-muted mb-0">Total Items</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card p-3 bg-success bg-opacity-10 rounded">
+                            <h3 class="text-success mb-1">${{ "{:,.2f}".format(summary['Total Retail Value']) }}</h3>
+                            <p class="text-muted mb-0">Total Retail Value</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card p-3 bg-info bg-opacity-10 rounded">
+                            <h3 class="text-info mb-1">${{ "{:,.2f}".format(summary['Avg. Value/Item']) }}</h3>
+                            <p class="text-muted mb-0">Avg Value/Item</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card p-3 bg-warning bg-opacity-10 rounded">
+                            <h3 class="text-warning mb-1">${{ "{:,.2f}".format(summary['Profit Potential']) }}</h3>
+                            <p class="text-muted mb-0">Profit Potential</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-clipboard-list me-2"></i>
+                                    Manifest Details
+                                </h5>
+                                <dl class="row">
+                                    <dt class="col-sm-6">Manifest Name:</dt>
+                                    <dd class="col-sm-6">{{ summary['Manifest Name'] }}</dd>
+                                    <dt class="col-sm-6">Status:</dt>
+                                    <dd class="col-sm-6">{{ summary['Top Brands'] }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-calculator me-2"></i>
+                                    Recommendations
+                                </h5>
+                                <dl class="row">
+                                    <dt class="col-sm-6">Max Bid:</dt>
+                                    <dd class="col-sm-6">{{ summary['Max Bid Recommendation'] }}</dd>
+                                    <dt class="col-sm-6">ROI Potential:</dt>
+                                    <dd class="col-sm-6">
+                                        {% if summary['Total Retail Value'] > 0 %}
+                                            {{ "{:.1f}%".format((summary['Profit Potential'] / summary['Total Retail Value']) * 100) }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google Sheets Links -->
+        {% if sheet_url or summary_sheet_url %}
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-table me-2 text-success"></i>
+                    Google Sheets Reports
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Your analysis has been exported to Google Sheets:</p>
+                
+                {% if sheet_url %}
+                <div class="mb-3">
+                    <h6><i class="fas fa-file-alt me-2"></i>Individual Manifest Tab</h6>
+                    <p class="text-muted small">Detailed product data for this specific manifest</p>
+                    <div class="d-flex gap-2 mb-3">
+                        <a href="{{ sheet_url }}" target="_blank" class="btn btn-success">
+                            <i class="fas fa-external-link-alt me-2"></i>
+                            Open Manifest Tab
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="copyToClipboard('{{ sheet_url }}')">
+                            <i class="fas fa-copy me-2"></i>
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if summary_sheet_url %}
+                <div>
+                    <h6><i class="fas fa-chart-line me-2"></i>Summary Dashboard</h6>
+                    <p class="text-muted small">Overview of all processed manifests with key metrics</p>
+                    <div class="d-flex gap-2">
+                        <a href="{{ summary_sheet_url }}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt me-2"></i>
+                            Open Summary Sheet
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="copyToClipboard('{{ summary_sheet_url }}')">
+                            <i class="fas fa-copy me-2"></i>
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Data Preview -->
+        {% if data %}
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Data Preview
+                    <span class="badge bg-secondary ms-2">{{ data|length }} items</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="table-responsive">
+              
+                </div>
+            
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('upload_view') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus me-2"></i>
+                Analyze Another Manifest
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

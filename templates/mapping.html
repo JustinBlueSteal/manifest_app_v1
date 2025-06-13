@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Column Mapping - Manifest Analyzer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card shadow mb-4">
+      <div class="card-header">
+        <h2 class="card-title mb-0">
+          <i class="fas fa-exchange-alt me-2 text-success"></i>
+          Map Your Columns
+        </h2>
+        <p class="text-muted mt-2">
+          Required fields <span class="text-danger">*</span>. Optional fields you can leave blank.
+        </p>
+      </div>
+      <div class="card-body">
+        <form id="mappingForm" method="post" action="{{ url_for('process_mapping') }}">
+          <input type="hidden" name="session_id" value="{{ session_id }}">
+
+          <!-- Required Fields -->
+          {% for field,label,help in [
+            ('Product Name','Product Name','Used for eBay lookup'),
+            ('Quantity','Quantity','Number of items'),
+            ('Orig. Retail','Original Retail Price','Retail price per unit')
+          ] %}
+          <div class="mb-3">
+            <label class="form-label">{{ label }} <span class="text-danger">*</span></label>
+            <select class="form-select" name="{{ field }}" required>
+              <option value="">Select column…</option>
+              {% for col in columns %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+            <div class="form-text">{{ help }}</div>
+          </div>
+          {% endfor %}
+
+          <!-- Optional Fields -->
+          {% for field in ['Listing ID','Listing Title','Category','UPC','ASIN','Stock Image','Cost per Unit'] %}
+          <div class="mb-3">
+            <label class="form-label">{{ field }}</label>
+            <select class="form-select" name="{{ field }}">
+              <option value="">Select column…</option>
+              {% for col in columns %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endfor %}
+
+          <!-- Total Cost override -->
+          <div class="mb-3">
+            <label class="form-label">Total Manifest Cost (optional)</label>
+            <input type="number" step="any" min="0" name="total_cost" class="form-control" placeholder="e.g. 2000">
+            <div class="form-text">If blank, uses Cost per Unit or Orig. Retail.</div>
+          </div>
+
+          <!-- Shipping & Margin -->
+          <div class="mb-3">
+            <label class="form-label">Shipping Cost per Unit (optional)</label>
+            <input type="number" step="any" min="0" name="shipping_cost" class="form-control" placeholder="e.g. 5.00">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Desired Margin % (optional)</label>
+            <input type="number" step="any" min="0" max="100" name="target_margin" class="form-control" value="20">
+            <div class="form-text">Default 20%.</div>
+          </div>
+
+          <hr class="my-4">
+          <div class="d-flex justify-content-between">
+            <a href="{{ url_for('upload_view') }}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left me-2"></i>Back to Upload
+            </a>
+            <button id="processBtn" type="submit" class="btn btn-primary btn-lg">
+              <i class="fas fa-cogs me-2"></i>Process & Analyze
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Available Columns Preview -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-eye me-2"></i>Available Columns
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          {% for col in columns %}
+          <div class="col-md-3 mb-2"><span class="badge bg-secondary">{{ col }}</span></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

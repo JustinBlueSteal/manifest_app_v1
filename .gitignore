@@ -1,0 +1,30 @@
+cat > .gitignore <<EOF
+# Virtual env
+venv/
+
+# Credentials & secrets
+credentials/
+*.json      # optional: if you only ever want placeholder templates
+.env
+
+# Caches / temp files
+tmp/
+*.pkl
+
+# Old backups, binaries
+PriorVersions/
+*.exe
+# remove entire directories
+cached 
+credentials/ 
+tmp/ 
+PriorVersions/
+
+# remove all .exe files in templates
+git rm --cached templates/*.exe
+
+# Node modules, logs, DBs
+node_modules/
+*.sqlite3
+*.log
+EOF

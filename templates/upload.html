@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Manifest - Manifest Analyzer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-upload me-2 text-primary"></i>
+                    Upload Product Manifest
+                </h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    Upload your Excel or CSV manifest file to begin analysis. We'll help you map the columns and fetch current eBay prices for profit analysis.
+                </p>
+
+                <form method="post" enctype="multipart/form-data" id="uploadForm">
+                    <div class="mb-4">
+                        <label for="manifest" class="form-label">
+                            <i class="fas fa-file-excel me-2"></i>
+                            Select Manifest File
+                        </label>
+                        <input 
+                            type="file" 
+                            class="form-control form-control-lg" 
+                            id="manifest" 
+                            name="manifest" 
+                            accept=".xls,.xlsx,.csv"
+                            required
+                        >
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Supported formats: XLS, XLSX, CSV (Max size: 10MB)
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="uploadBtn">
+                            <i class="fas fa-upload me-2"></i>
+                            Upload and Continue
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    How It Works
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="feature-icon">
+                            <i class="fas fa-upload fa-2x text-primary mb-2"></i>
+                        </div>
+                        <h6>1. Upload</h6>
+                        <p class="text-muted small">Upload your manifest file with product data</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="feature-icon">
+                            <i class="fas fa-exchange-alt fa-2x text-success mb-2"></i>
+                        </div>
+                        <h6>2. Map Columns</h6>
+                        <p class="text-muted small">Map your columns to our standard fields</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar fa-2x text-info mb-2"></i>
+                        </div>
+                        <h6>3. Analyze</h6>
+                        <p class="text-muted small">Get eBay prices and profit analysis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

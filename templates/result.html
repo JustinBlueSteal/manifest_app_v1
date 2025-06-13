@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - Manifest Analyzer{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+
+    <!-- Metrics Row -->
+    <div class="row text-center mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="metric-card p-3 bg-primary bg-opacity-10 rounded">
+          <h3 class="text-primary mb-1">{{ "{:,}".format(summary['Total Items']) }}</h3>
+          <p class="text-muted mb-0">Total Items</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="metric-card p-3 bg-success bg-opacity-10 rounded">
+          <h3 class="text-success mb-1">${{ "{:,.2f}".format(summary['Total Retail Value']) }}</h3>
+          <p class="text-muted mb-0">Total Retail Value</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="metric-card p-3 bg-info bg-opacity-10 rounded">
+          <h3 class="text-info mb-1">${{ "{:,.2f}".format(summary['Avg. Value/Item']) }}</h3>
+          <p class="text-muted mb-0">Avg Value/Item</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="metric-card p-3 bg-warning bg-opacity-10 rounded">
+          <h3 class="text-warning mb-1">${{ "{:,.2f}".format(summary['Profit Potential']) }}</h3>
+          <p class="text-muted mb-0">Profit Potential</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details & Recommendations -->
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <div class="card bg-dark text-white">
+          <div class="card-body">
+            <h5 class="card-title">
+              <i class="fas fa-clipboard-list me-2"></i>Manifest Details
+            </h5>
+            <dl class="row">
+              <dt class="col-sm-5">Manifest Name:</dt>
+              <dd class="col-sm-7">{{ summary['Manifest Name'] }}</dd>
+              <dt class="col-sm-5">Status:</dt>
+              <dd class="col-sm-7">Complete</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card bg-dark text-white">
+          <div class="card-body">
+            <h5 class="card-title">
+              <i class="fas fa-calculator me-2"></i>Recommendations
+            </h5>
+            <dl class="row">
+              <dt class="col-sm-5">Max Bid:</dt>
+              <dd class="col-sm-7">TBD</dd>
+              <dt class="col-sm-5">ROI Potential:</dt>
+              <dd class="col-sm-7">TBD</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Sheets Links -->
+    <div class="card shadow mb-4">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-table me-2 text-success"></i>Google Sheets Reports
+        </h5>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">Your analysis has been exported to Google Sheets:</p>
+        {% if sheet_url %}
+        <a href="{{ sheet_url }}" target="_blank" class="btn btn-success me-2">
+          <i class="fas fa-file-alt me-1"></i>Open Manifest Tab
+        </a>
+        {% endif %}
+        {% if summary_sheet_url %}
+        <a href="{{ summary_sheet_url }}" target="_blank" class="btn btn-primary">
+          <i class="fas fa-chart-line me-1"></i>Open Summary Sheet
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Data Preview Table -->
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Product Name</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-end">Orig. Retail</th>
+            <th class="text-end">Avg Sold Price</th>
+            <th class="text-end">Total Value</th>
+            <th class="text-end">Profit Potential</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in data[:10] %}
+          <tr>
+            <td>{{ item['Product Name'] }}</td>
+            <td class="text-center">{{ item['Quantity'] }}</td>
+            <td class="text-end">${{ "{:.2f}".format(item['Orig. Retail']) }}</td>
+            <td class="text-end">${{ "{:.2f}".format(item['Avg Sold Price']) }}</td>
+            <td class="text-end">${{ "{:.2f}".format(item['Quantity'] * item['Orig. Retail']) }}</td>
+            <td class="text-end {% if item['Profit Potential']>0 %}text-success{% else %}text-danger{% endif %}">
+              ${{ "{:.2f}".format(item['Profit Potential']) }}
+            </td>
+          </tr>
+          {% endfor %}
+          {% if data|length>10 %}
+          <tr>
+            <td colspan="6" class="text-center text-muted">
+              … and {{ data|length - 10 }} more items
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('upload_view') }}" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus me-2"></i>Analyze Another Manifest
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

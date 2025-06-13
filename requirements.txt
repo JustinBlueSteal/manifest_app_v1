@@ -1,0 +1,17 @@
+flask                              # Web framework for routing and server logic
+pandas                             # Data analysis and manipulation
+requests                           # Makes HTTP requests (used for eBay API, etc.)
+gspread                            # Interact with Google Sheets
+
+google-auth                        # Core authentication for Google APIs
+google-auth-httplib2               # HTTP support for google-auth
+google-auth-oauthlib               # OAuth2 login support for Google APIs
+google-api-python-client           # Full client for Google Sheets/Drive API
+
+openpyxl                           # Read/write Excel .xlsx files
+xlrd                               # Read legacy .xls files
+
+gunicorn                           # Production WSGI server for Flask apps
+python-dotenv                      # Load environment variables from .env file
+jinja2                             # Templating engine used in Flask HTML
+oauthlib                           # General OAuth protocol support
